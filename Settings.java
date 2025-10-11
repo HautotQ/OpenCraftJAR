@@ -1,5 +1,3 @@
-import net.tabarcraft.opencraft.AppStorage;
-
 public class Settings {
     private static final AppStorage storage = new AppStorage(System.getProperty("user.home") + "config.properties");
 
