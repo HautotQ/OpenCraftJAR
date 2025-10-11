@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import AppStorage;
-import Settings;
 
 public class SettingsView extends JPanel {
 
