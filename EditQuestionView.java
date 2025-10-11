@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import Question;
-import QuestionStore;
 
 public class EditQuestionView extends JPanel {
     private final JTextField questionField;
