@@ -1,70 +1,52 @@
-import javax.swing.*;
-import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
 
-public class AddQuestionView extends JPanel {
-    private final JTextField queryField;
-    private final JTextField answerField;
-    private final QuestionStore questionStore;
+public class AppStorage {
+    private final Properties props;
+    private final File file;
 
-    public AddQuestionView(QuestionStore store) {
-        this.questionStore = store;
-
-        // Mise en page verticale
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-        // Titre
-        JLabel title = new JLabel("Ajouter une Question");
-        title.setFont(new Font("Arial", Font.BOLD, 20));
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Champ Question
-        JLabel queryLabel = new JLabel("Question :");
-        queryField = new JTextField();
-        queryField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        queryField.setToolTipText("Tapez la question ici...");
-
-        // Champ Réponse
-        JLabel answerLabel = new JLabel("Réponse :");
-        answerField = new JTextField();
-        answerField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        answerField.setToolTipText("Tapez la réponse ici...");
-
-        // Bouton Ajouter
-        JButton addButton = new JButton("Ajouter");
-        addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        addButton.addActionListener(e -> addQuestion());
-
-        // Espacements
-        add(Box.createVerticalStrut(10));
-        add(title);
-        add(Box.createVerticalStrut(15));
-        add(queryLabel);
-        add(queryField);
-        add(Box.createVerticalStrut(10));
-        add(answerLabel);
-        add(answerField);
-        add(Box.createVerticalStrut(15));
-        add(addButton);
+    public AppStorage(String filename) {
+        block7: {
+            this.props = new Properties();
+            this.file = new File(filename);
+            try {
+                if (!this.file.exists()) break block7;
+                try (FileReader reader = new FileReader(this.file);){
+                    this.props.load(reader);
+                }
+            } catch (IOException e) {
+                System.err.println("Erreur au chargement de " + filename + " : " + e.getMessage());
+            }
+        }
     }
 
-    private void addQuestion() {
-        String questionText = queryField.getText().trim();
-        String answerText = answerField.getText().trim();
+    public void set(String key, String value) {
+        this.props.setProperty(key, value);
+        this.save();
+    }
 
-        if (!questionText.isEmpty() && !answerText.isEmpty()) {
-            Question question = new Question(questionText, answerText);
-            questionStore.addQuestion(question);
-            queryField.setText("");
-            answerField.setText("");
+    public String get(String key, String defaultValue) {
+        return this.props.getProperty(key, defaultValue);
+    }
 
-            System.out.println("Ajout : " + questionText + " => " + answerText);
-            System.out.println("Taille actuelle : " + questionStore.getObservableQuestions().size());
-            questionStore.getObservableQuestions().forEach(q -> System.out.println("-> " + q.getQuery()));
+    public boolean getBoolean(String key, boolean defaultValue) {
+        return Boolean.parseBoolean(this.get(key, String.valueOf(defaultValue)));
+    }
 
-            JOptionPane.showMessageDialog(this, "Question ajoutée avec succès !");
-        } else {
-            JOptionPane.showMessageDialog(this, "Veuillez remplir les deux champs.", "Champs manquants", JOptionPane.WARNING_MESSAGE);
+    public void setBoolean(String key, boolean value) {
+        this.set(key, String.valueOf(value));
+    }
+
+    public void save() {
+        try (FileOutputStream fos = new FileOutputStream(this.file);){
+            this.props.store(fos, "AppStorage Preferences");
+            fos.getFD().sync();
+        } catch (IOException e) {
+            System.err.println("Erreur lors de l'enregistrement de " + this.file.getName() + " : " + e.getMessage());
         }
     }
 }
+
