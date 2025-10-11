@@ -11,29 +11,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Récupérer le dépôt
+      # 1️⃣ Cloner le dépôt
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # 2️⃣ Installer Java
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      # 3️⃣ Compiler les fichiers .java
+      # 3️⃣ Nettoyer d'anciennes compilations
+      - name: Clean old build files
+        run: |
+          rm -rf bin
+          rm -f *.class
+          mkdir -p bin
+
+      # 4️⃣ Compiler tous les fichiers Java à la racine
       - name: Compile Java files
         run: |
-          mkdir -p bin
           javac -d bin *.java
 
-      # 4️⃣ Créer le fichier JAR en incluant Launcher.html
-      - name: Create JAR including HTML
+      # 5️⃣ Créer un JAR exécutable
+      - name: Create executable JAR
         run: |
-          jar cf OpenCraft.jar -C bin . Launcher.html
+          echo "Main-Class: ContentView" > MANIFEST.MF
+          jar cfm OpenCraft.jar MANIFEST.MF -C bin .
 
-      # 5️⃣ Sauvegarder le JAR comme artefact
+      # 6️⃣ Sauvegarder le JAR dans les artefacts
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
