@@ -29,7 +29,7 @@ public class PlayQuestionsView extends JPanel {
         this.questionStore = store;
         this.onEndView = onEndView;
 
-        this.remainingQuestions = new ArrayList<>(store.getObservableQuestions());
+        this.remainingQuestions = new ArrayList<>(store.getQuestions());
         Collections.shuffle(this.remainingQuestions);
         if (!this.remainingQuestions.isEmpty()) {
             this.currentQuestion = this.remainingQuestions.get(0);
@@ -38,7 +38,7 @@ public class PlayQuestionsView extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        if (store.getObservableQuestions().isEmpty()) {
+        if (store.getQuestions().isEmpty()) {
             JLabel label = new JLabel("Pas de questions enregistrées...", SwingConstants.CENTER);
             add(label);
             return;
@@ -76,7 +76,7 @@ public class PlayQuestionsView extends JPanel {
             questionLabel.setText(currentQuestion.getQuery());
             remainingLabel.setText("Questions restantes : " + remainingQuestions.size());
 
-            int total = questionStore.getObservableQuestions().size();
+            int total = questionStore.getQuestions().size();
             double progress = (double) (total - remainingQuestions.size()) / total;
             progressBar.setValue((int) (progress * 100));
             progressLabel.setText("Progression : " + (int) (progress * 100) + "%");
@@ -146,7 +146,7 @@ public class PlayQuestionsView extends JPanel {
 
         JLabel endLabel = new JLabel(
             "<html><div style='text-align:center;'>Fin des questions !<br><br>Score : " +
-            score + "/" + questionStore.getObservableQuestions().size() + "</div></html>",
+            score + "/" + questionStore.getQuestions().size() + "</div></html>",
             SwingConstants.CENTER
         );
         endLabel.setFont(new Font("Arial", Font.BOLD, 20));
