@@ -84,7 +84,7 @@ public class ViewQuestionsView extends JPanel {
                     "Confirmation",
                     JOptionPane.YES_NO_OPTION);
             if (choice == JOptionPane.YES_OPTION) {
-                questionStore.getObservableQuestions().clear();
+                questionStore.getQuestions().clear();
                 questionStore.saveQuestions();
                 refreshList();
             }
@@ -93,7 +93,7 @@ public class ViewQuestionsView extends JPanel {
 
     private void refreshList() {
         listModel.clear();
-        for (Question q : questionStore.getObservableQuestions()) {
+        for (Question q : questionStore.getQuestions()) {
             listModel.addElement(q);
         }
     }
@@ -106,7 +106,7 @@ public class ViewQuestionsView extends JPanel {
         if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                for (Question q : questionStore.getObservableQuestions()) {
+                for (Question q : questionStore.getQuestions()) {
                     writer.write(q.getQuery() + "|" + q.getAnswer());
                     writer.newLine();
                 }
@@ -125,9 +125,9 @@ public class ViewQuestionsView extends JPanel {
             File file = chooser.getSelectedFile();
             try {
                 String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
-                questionStore.getObservableQuestions().clear();
+                questionStore.getQuestions().clear();
                 List<Question> parsed = parseQuestions(content);
-                questionStore.getObservableQuestions().addAll(parsed);
+                questionStore.getQuestions().addAll(parsed);
                 questionStore.saveQuestions();
                 refreshList();
             } catch (IOException ex) {
