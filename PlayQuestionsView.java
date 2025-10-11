@@ -3,9 +3,6 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
-import Question;
-import QuestionStore;
-import Settings;
 
 public class PlayQuestionsView extends JPanel {
     private final QuestionStore questionStore;
