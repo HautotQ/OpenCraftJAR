@@ -1,6 +1,10 @@
 import javax.swing.*;
-import java.awt.*;
-import java.util.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 public class StudyView extends JPanel {
     private final Queue<Question> queue;
@@ -11,8 +15,11 @@ public class StudyView extends JPanel {
 
     public StudyView(QuestionStore store) {
         setLayout(new BorderLayout());
-        queue = new LinkedList<>(store.getQuestions());
-        Collections.shuffle((List<?>) queue);
+
+        // Crée une liste pour mélanger les questions
+        List<Question> shuffled = new LinkedList<>(store.getQuestions());
+        Collections.shuffle(shuffled);
+        queue = new LinkedList<>(shuffled);
 
         questionLabel = new JLabel("", SwingConstants.CENTER);
         questionLabel.setFont(new Font("Arial", Font.BOLD, 16));
